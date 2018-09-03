@@ -1,0 +1,27 @@
+Package: survivalAnalysis
+Type: Package
+Title: High-Level Interface for Survival Analysis and Associated Plots
+Version: 0.1.0
+Author: Marcel Wiesweg [aut, cre]
+Authors@R: person("Marcel", "Wiesweg", email = "marcel.wiesweg@uk-essen.de", role = c("aut", "cre"))
+Maintainer: Marcel Wiesweg <marcel.wiesweg@uk-essen.de>
+Description: A high-level interface to perform survival analysis, 
+    including Kaplan-Meier analysis and log-rank tests and Cox regression.
+    Aims at providing a clear and elegant syntax, support for use in a pipeline, structured output and plotting.
+    Builds upon the survminer package for Kaplan-Meier plots and provides
+    a customizable implementation for forest plots.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.3.0)
+Imports: grDevices, graphics, stats, utils, survival, rlang, dplyr,
+        forcats, magrittr, purrr, stringr, tibble, tidyr, gridExtra,
+        ggplot2 (>= 2.2.1), scales, survminer (> 0.4.0), cowplot,
+        tidytidbits
+RoxygenNote: 6.0.1
+Suggests: knitr, rmarkdown, tidyverse
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2018-08-31 13:39:24 UTC; wiesweg
+Repository: CRAN
+Date/Publication: 2018-09-03 11:10:02 UTC
