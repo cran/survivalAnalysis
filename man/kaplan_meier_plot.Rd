@@ -4,7 +4,8 @@
 \alias{kaplan_meier_plot}
 \title{Kaplan Meier plots from survival results.}
 \usage{
-kaplan_meier_plot(..., mapped_plot_args = list(), p_lessthan_cutoff = 0.001)
+kaplan_meier_plot(..., mapped_plot_args = list(),
+  p_lessthan_cutoff = 0.001)
 }
 \arguments{
 \item{...}{One or many SurvivalAnalysisResult objects as returned by \code{\link{analyse_survival}} and

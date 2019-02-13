@@ -1,10 +1,10 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom magrittr "%<>%"
 #' @importFrom magrittr "%$%"
-#' @import rlang
+#' @rawNamespace import(rlang, except="flatten_raw")
 #' @rawNamespace import(tibble, except="has_name")
 #' @import dplyr
-#' @rawNamespace import(purrr, except=c("prepend", "flatten", "flatten_int", "flatten_chr", "flatten_dbl", "flatten_lgl", "as_function", "splice", "invoke", "%||%", "%@%", "list_along", "rep_along", "modify"))
+#' @rawNamespace import(purrr, except=c("prepend", "flatten", "flatten_int", "flatten_chr", "flatten_dbl", "flatten_lgl", "flatten_raw", "as_function", "splice", "invoke", "%||%", "%@%", "list_along", "rep_along", "modify"))
 #' @import tidyr
 #' @import stringr
 #' @import forcats

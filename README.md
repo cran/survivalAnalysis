@@ -6,7 +6,12 @@ The syntax follows the tidyverse philosophy and is made to be used in a pipeline
 
 # Installation
 
-Install from bitbucket:
+Install from CRAN:
+```r
+install.packages("survivalAnalysis")
+```
+
+Or install the latest git version from bitbucket:
 ```r
 devtools::install_bitbucket("mwiesweg/survivalAnalysis")
 ```

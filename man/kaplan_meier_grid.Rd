@@ -4,11 +4,12 @@
 \alias{kaplan_meier_grid}
 \title{A grid of kaplan meier plots}
 \usage{
-kaplan_meier_grid(..., nrow = NULL, ncol = NULL, layout_matrix = NULL,
-  byrow = T, mapped_plot_args = list(), paperwidth = NULL,
-  paperheight = NULL, size_per_plot = dinAWidth(5), title = NA,
-  surv.plot.height = NULL, risk.table.height = NULL,
-  ncensor.plot.height = NULL, p_lessthan_cutoff = 0.001)
+kaplan_meier_grid(..., nrow = NULL, ncol = NULL,
+  layout_matrix = NULL, byrow = T, mapped_plot_args = list(),
+  paperwidth = NULL, paperheight = NULL,
+  size_per_plot = dinAWidth(5), title = NA, surv.plot.height = NULL,
+  risk.table.height = NULL, ncensor.plot.height = NULL,
+  p_lessthan_cutoff = 0.001)
 }
 \arguments{
 \item{...}{One or many SurvivalAnalysisResult objects as returned by \code{\link{analyse_survival}} and

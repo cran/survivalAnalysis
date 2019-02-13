@@ -7,6 +7,7 @@
 #'
 #' @param x a vector
 #' @param ... Effectively ignored
+#' @export
 #'
 #' @return An integer vector
 identity_order <- function(x, ...)

@@ -44,11 +44,21 @@
 {
   timespanScaling <- .timespan_scaling(timespanUnit)
   overall_table <- summary(result$fitOverall)[["table"]] / timespanScaling
+
+  # strange things happen
+  lcl_label <- "0.95LCL"
+  ucl_label <- "0.95UCL"
+  if (!lcl_label %in% names(overall_table))
+  {
+    lcl_label <- "0,95LCL"
+    ucl_label <- "0,95UCL"
+  }
+
   tibble("log.rank.p"=pValueOfSurvDiff(result$diff),
          "n"=sum(result$fit$n),
          "median"=overall_table[["median"]],
-         "Lower.CI"=overall_table[["0.95LCL"]],
-         "Upper.CI"=overall_table[["0.95UCL"]],
+         "Lower.CI"=overall_table[[lcl_label]],
+         "Upper.CI"=overall_table[[ucl_label]],
          "min"=min(result$fitOverall$time) / timespanScaling,
          "max"=max(result$fitOverall$time) / timespanScaling) %>%
     mutate(label="overall:") ->
@@ -78,7 +88,19 @@
 
   timespanScaling <- .timespan_scaling(timespanUnit)
 
-  perFactor <- data.frame(summary(result$fit)$table[,c("records", "events", "median", "0.95LCL", "0.95UCL")])
+  table <- summary(result$fit)$table
+
+  # strange things happen
+  lcl_label <- "0.95LCL"
+  ucl_label <- "0.95UCL"
+  if (!lcl_label %in% colnames(table))
+  {
+    lcl_label <- "0,95LCL"
+    ucl_label <- "0,95UCL"
+  }
+  print(table)
+
+  perFactor <- data.frame(table[,c("records", "events", "median", lcl_label, ucl_label)])
   colnames(perFactor) <- c("records", "events", "median", "Lower.CI", "Upper.CI")
   perFactor %<>%
     mutate(label = .stratum_labels(result)) %>%
