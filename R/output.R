@@ -98,7 +98,6 @@
     lcl_label <- "0,95LCL"
     ucl_label <- "0,95UCL"
   }
-  print(table)
 
   perFactor <- data.frame(table[,c("records", "events", "median", lcl_label, ucl_label)])
   colnames(perFactor) <- c("records", "events", "median", "Lower.CI", "Upper.CI")
@@ -174,7 +173,7 @@
   }
 
   result$diff_pairwise$p.value %>%
-    as_data_frame() ->
+    as_tibble() ->
   df
 
   if (format_numbers)
@@ -342,6 +341,7 @@ format.SurvivalAnalysisUnivariateResult <- function(x,
 
     df %>%
       as.data.frame() %>%
+      remove_rownames() %>%
       column_to_rownames("label") %>%
       capture.output() %>%
       str_c(collapse = "\n")

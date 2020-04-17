@@ -5,13 +5,27 @@
 \alias{analyze_survival}
 \title{Univariate survival analysis}
 \usage{
-analyse_survival(data, time_status, by, by_label_map = NULL,
-  by_order_vector = NULL, cox_reference_level = NULL,
-  p_adjust_method = "none", plot_args = list())
+analyse_survival(
+  data,
+  time_status,
+  by,
+  by_label_map = NULL,
+  by_order_vector = NULL,
+  cox_reference_level = NULL,
+  p_adjust_method = "none",
+  plot_args = list()
+)
 
-analyze_survival(data, time_status, by, by_label_map = NULL,
-  by_order_vector = NULL, cox_reference_level = NULL,
-  p_adjust_method = "none", plot_args = list())
+analyze_survival(
+  data,
+  time_status,
+  by,
+  by_label_map = NULL,
+  by_order_vector = NULL,
+  cox_reference_level = NULL,
+  p_adjust_method = "none",
+  plot_args = list()
+)
 }
 \arguments{
 \item{data}{A data frame containing the time/status information and, if used, the covariate.}

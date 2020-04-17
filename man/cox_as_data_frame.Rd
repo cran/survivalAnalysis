@@ -4,8 +4,12 @@
 \alias{cox_as_data_frame}
 \title{Turns a coxph result to a data frame}
 \usage{
-cox_as_data_frame(coxphsummary, unmangle_dict = NULL,
-  factor_id_sep = ":", sort_by = NULL)
+cox_as_data_frame(
+  coxphsummary,
+  unmangle_dict = NULL,
+  factor_id_sep = ":",
+  sort_by = NULL
+)
 }
 \arguments{
 \item{coxphsummary}{The summary.coxph or coxph result object}

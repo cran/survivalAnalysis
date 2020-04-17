@@ -116,7 +116,7 @@ quo_category <- function(q)
   }
   else if (quo_is_symbolic(q))
   {
-    if (quo_is_lang(q))
+    if (quo_is_call(q))
       "language"
     else
       "symbol"

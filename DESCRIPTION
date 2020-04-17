@@ -1,7 +1,7 @@
 Package: survivalAnalysis
 Type: Package
 Title: High-Level Interface for Survival Analysis and Associated Plots
-Version: 0.1.1
+Version: 0.1.2
 Author: Marcel Wiesweg [aut, cre]
 Authors@R: person("Marcel", "Wiesweg", email = "marcel.wiesweg@uk-essen.de", role = c("aut", "cre"))
 Maintainer: Marcel Wiesweg <marcel.wiesweg@uk-essen.de>
@@ -12,19 +12,19 @@ Description: A high-level interface to perform survival analysis,
     a customizable implementation for forest plots.
     Kaplan & Meier (1958) <doi:10.1080/01621459.1958.10501452>
     Cox (1972) <JSTOR:2985181>
-    Peto & Peto (1972) <doi:10.2307/2344317>.
+    Peto & Peto (1972) <JSTOR:2344317>.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.3.0)
-Imports: grDevices, graphics, stats, utils, survival, rlang, dplyr,
-        forcats, magrittr, purrr, stringr, tibble, tidyr, gridExtra,
-        ggplot2 (>= 2.2.1), scales, survminer (> 0.4.0), cowplot,
-        tidytidbits
-RoxygenNote: 6.1.1
+Imports: grDevices, graphics, stats, utils, survival, rlang (>= 0.2.0),
+        dplyr (>= 0.8.0), forcats, magrittr, purrr, stringr, tibble,
+        tidyr, gridExtra, ggplot2 (>= 2.2.1), scales, survminer (>
+        0.4.0), cowplot, tidytidbits
+RoxygenNote: 7.1.0
 Suggests: knitr, rmarkdown, tidyverse
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-02-12 15:23:56 UTC; wiesweg
+Packaged: 2020-04-17 10:35:32 UTC; wiesweg
 Repository: CRAN
-Date/Publication: 2019-02-13 09:40:04 UTC
+Date/Publication: 2020-04-17 12:40:02 UTC

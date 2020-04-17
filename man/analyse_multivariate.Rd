@@ -5,13 +5,27 @@
 \alias{analyze_multivariate}
 \title{Multivariate analysis (Cox Regression)}
 \usage{
-analyse_multivariate(data, time_status, covariates, strata = NULL,
-  covariate_name_dict = NULL, covariate_label_dict = NULL,
-  reference_level_dict = NULL, sort_frame_by = vars(HR))
+analyse_multivariate(
+  data,
+  time_status,
+  covariates,
+  strata = NULL,
+  covariate_name_dict = NULL,
+  covariate_label_dict = NULL,
+  reference_level_dict = NULL,
+  sort_frame_by = vars(HR)
+)
 
-analyze_multivariate(data, time_status, covariates, strata = NULL,
-  covariate_name_dict = NULL, covariate_label_dict = NULL,
-  reference_level_dict = NULL, sort_frame_by = vars(HR))
+analyze_multivariate(
+  data,
+  time_status,
+  covariates,
+  strata = NULL,
+  covariate_name_dict = NULL,
+  covariate_label_dict = NULL,
+  reference_level_dict = NULL,
+  sort_frame_by = vars(HR)
+)
 }
 \arguments{
 \item{data}{A data frame containing the time/status information and, if used, the covariate.}

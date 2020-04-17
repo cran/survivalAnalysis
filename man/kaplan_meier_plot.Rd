@@ -4,8 +4,7 @@
 \alias{kaplan_meier_plot}
 \title{Kaplan Meier plots from survival results.}
 \usage{
-kaplan_meier_plot(..., mapped_plot_args = list(),
-  p_lessthan_cutoff = 0.001)
+kaplan_meier_plot(..., mapped_plot_args = list(), p_lessthan_cutoff = 0.001)
 }
 \arguments{
 \item{...}{One or many SurvivalAnalysisResult objects as returned by \code{\link{analyse_survival}} and
@@ -16,7 +15,8 @@ in this case, the last occurrence is used, i.e. you can first pass a list
 with default arguments, and then override some of them.
 In addition to all arguments supported by \code{\link{ggsurvplot}}, these arguments and shortcuts can be used additionally:
 \itemize{
-\item break.time.by: breakByYear, breakByHalfYear, breakByQuarterYear, breakByMonth
+\item break.time.by: breakByYear, breakByHalfYear, breakByQuarterYear, breakByMonth (numeric value only in ggsurvplot)
+\item xscale: scaleByYear, scaleByMonth (numeric value only in ggsurvplot)
 \item hazard.ratio (logical): display hazard ratios in addition to p value, complementing pval=T
 \item xlab: \{.OS,.PFS,.TTF,.DFS\}.\{years,months,days\}
 \item table.layout: clean, displays risk table only with color code and number, no grid, axes or labels.

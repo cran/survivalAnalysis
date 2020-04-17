@@ -4,8 +4,13 @@
 \alias{forest_plot_grid}
 \title{Create a grid of forest plots}
 \usage{
-forest_plot_grid(..., nrow = NULL, ncol = NULL, byrow = T,
-  plot_grid_args = list())
+forest_plot_grid(
+  ...,
+  nrow = NULL,
+  ncol = NULL,
+  byrow = T,
+  plot_grid_args = list()
+)
 }
 \arguments{
 \item{...}{Pass individual plots returned by forest_plot, or lists of such plots (bare lists will be spliced).}

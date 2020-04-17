@@ -1,10 +1,10 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom magrittr "%<>%"
 #' @importFrom magrittr "%$%"
-#' @rawNamespace import(rlang, except="flatten_raw")
+#' @rawNamespace import(rlang, except=c("prepend", "flatten_raw"))
 #' @rawNamespace import(tibble, except="has_name")
 #' @import dplyr
-#' @rawNamespace import(purrr, except=c("prepend", "flatten", "flatten_int", "flatten_chr", "flatten_dbl", "flatten_lgl", "flatten_raw", "as_function", "splice", "invoke", "%||%", "%@%", "list_along", "rep_along", "modify"))
+#' @rawNamespace import(purrr, except=c("flatten", "flatten_int", "flatten_chr", "flatten_dbl", "flatten_lgl", "flatten_raw", "as_function", "splice", "invoke", "%||%", "%@%", "list_along", "rep_along", "modify"))
 #' @import tidyr
 #' @import stringr
 #' @import forcats
@@ -35,6 +35,7 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c(".",
                                                        "breakByHalfYear",
                                                        "breakByQuarterYear",
                                                        "scaleByMonths",
+                                                       "scaleByYears",
                                                        "label",
                                                        "factor.name",
                                                        "factor.value",

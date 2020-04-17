@@ -5,31 +5,58 @@
 \alias{forest_plot.df}
 \title{Forest plots for survival analysis.}
 \usage{
-forest_plot(..., use_one_hot = F, factor_labeller = identity,
-  endpoint_labeller = identity, orderer = identity_order,
-  categorizer = NULL, relative_widths = c(1, 1, 1),
-  ggtheme = theme_bw(), labels_displayed = c("endpoint", "factor"),
+forest_plot(
+  ...,
+  use_one_hot = F,
+  factor_labeller = identity,
+  endpoint_labeller = identity,
+  orderer = identity_order,
+  categorizer = NULL,
+  relative_widths = c(1, 1, 1),
+  ggtheme = theme_bw(),
+  labels_displayed = c("endpoint", "factor"),
   label_headers = c(endpoint = "Endpoint", factor = "Subgroup", n = "n"),
-  values_displayed = c("HR", "CI", "p"), value_headers = c(HR = "HR",
-  CI = "CI", p = "p", n = "n", subgroup_n = "n"),
-  HRsprintfFormat = "\%.2f", psprintfFormat = "\%.3f",
-  p_lessthan_cutoff = 0.001, log_scale = T, HR_x_breaks = seq(0, 10),
-  HR_x_limits = NULL, factor_id_sep = ":", na_rm = TRUE,
-  title = NULL, title_relative_height = 0.1,
-  title_label_args = list(), base_papersize = dinA(4))
+  values_displayed = c("HR", "CI", "p"),
+  value_headers = c(HR = "HR", CI = "CI", p = "p", n = "n", subgroup_n = "n"),
+  HRsprintfFormat = "\%.2f",
+  psprintfFormat = "\%.3f",
+  p_lessthan_cutoff = 0.001,
+  log_scale = T,
+  HR_x_breaks = seq(0, 10),
+  HR_x_limits = NULL,
+  factor_id_sep = ":",
+  na_rm = TRUE,
+  title = NULL,
+  title_relative_height = 0.1,
+  title_label_args = list(),
+  base_papersize = dinA(4)
+)
 
-forest_plot.df(.df, factor_labeller = identity,
-  endpoint_labeller = identity, orderer = identity_order,
-  categorizer = NULL, relative_widths = c(1, 1, 1),
-  ggtheme = theme_bw(), labels_displayed = c("endpoint", "factor"),
+forest_plot.df(
+  .df,
+  factor_labeller = identity,
+  endpoint_labeller = identity,
+  orderer = identity_order,
+  categorizer = NULL,
+  relative_widths = c(1, 1, 1),
+  ggtheme = theme_bw(),
+  labels_displayed = c("endpoint", "factor"),
   label_headers = c(endpoint = "Endpoint", factor = "Subgroup", n = "n"),
-  values_displayed = c("HR", "CI", "p"), value_headers = c(HR = "HR",
-  CI = "CI", p = "p", n = "n", subgroup_n = "n"),
-  HRsprintfFormat = "\%.2f", psprintfFormat = "\%.3f",
-  p_lessthan_cutoff = 0.001, log_scale = T, HR_x_breaks = seq(0, 10),
-  HR_x_limits = NULL, factor_id_sep = ":", na_rm = TRUE,
-  title = NULL, title_relative_height = 0.1,
-  title_label_args = list(), base_papersize = dinA(4))
+  values_displayed = c("HR", "CI", "p"),
+  value_headers = c(HR = "HR", CI = "CI", p = "p", n = "n", subgroup_n = "n"),
+  HRsprintfFormat = "\%.2f",
+  psprintfFormat = "\%.3f",
+  p_lessthan_cutoff = 0.001,
+  log_scale = T,
+  HR_x_breaks = seq(0, 10),
+  HR_x_limits = NULL,
+  factor_id_sep = ":",
+  na_rm = TRUE,
+  title = NULL,
+  title_relative_height = 0.1,
+  title_label_args = list(),
+  base_papersize = dinA(4)
+)
 }
 \arguments{
 \item{...}{The SurvivalAnalysisResult objects.

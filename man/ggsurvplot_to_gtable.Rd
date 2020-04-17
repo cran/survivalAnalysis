@@ -4,8 +4,12 @@
 \alias{ggsurvplot_to_gtable}
 \title{Build a gtable representation from a ggsurvplot object}
 \usage{
-ggsurvplot_to_gtable(ggsurv_obj, surv.plot.height = NULL,
-  risk.table.height = NULL, ncensor.plot.height = NULL)
+ggsurvplot_to_gtable(
+  ggsurv_obj,
+  surv.plot.height = NULL,
+  risk.table.height = NULL,
+  ncensor.plot.height = NULL
+)
 }
 \arguments{
 \item{ggsurv_obj}{The ggsurvplot object}

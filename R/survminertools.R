@@ -10,7 +10,8 @@
 #'     with default arguments, and then override some of them.
 #'     In addition to all arguments supported by \code{\link{ggsurvplot}}, these arguments and shortcuts can be used additionally:
 #'     \itemize{
-#'     \item break.time.by: breakByYear, breakByHalfYear, breakByQuarterYear, breakByMonth
+#'     \item break.time.by: breakByYear, breakByHalfYear, breakByQuarterYear, breakByMonth (numeric value only in ggsurvplot)
+#'     \item xscale: scaleByYear, scaleByMonth (numeric value only in ggsurvplot)
 #'     \item hazard.ratio (logical): display hazard ratios in addition to p value, complementing pval=T
 #'     \item xlab: \{.OS,.PFS,.TTF,.DFS\}.\{years,months,days\}
 #'     \item table.layout: clean, displays risk table only with color code and number, no grid, axes or labels.
@@ -352,7 +353,8 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
 .survivalScaleConstants <- function()
 {
   scaleByMonths <- 30.5
-  breakByYears <- 12*scaleByMonths
+  scaleByYears <- 365.25
+  breakByYears <- 365.25
   breakByHalfYear <- 6*scaleByMonths
   breakByQuarterYear <- 3*scaleByMonths
   return(localVariables())
@@ -444,6 +446,20 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
     else
       stop("Unsupported text argument to break.time.by: ", survminerArgs[["break.time.by"]])
   }
+  if ("xscale" %in% names(survminerArgs) && is.character(survminerArgs[["xscale"]]) )
+  {
+    if (startsWith(survminerArgs[["break.time.by"]], "scaleByYear"))
+    {
+      survminerArgs[["xscale"]] <- scaleByYears
+    }
+    else if (startsWith(survminerArgs[["break.time.by"]], "scaleByMonth"))
+    {
+      survminerArgs[["xscale"]] <- scaleByMonths
+    }
+    else
+      stop("Unsupported text argument to xscale: ", survminerArgs[["xscale"]])
+  }
+
 
   if (factorId == "1")
   {
