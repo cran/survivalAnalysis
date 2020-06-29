@@ -2,7 +2,29 @@
 # Extracts the p-value from a survdiff object
 pValueOfSurvDiff <- function(diff)
 {
-  possibly(~pchisq(., 1, lower.tail = F), otherwise = NA, quiet = T)(diff[['chisq']])
+  possibly(extract_p_value_from_surv_diff, otherwise = NA, quiet = T)(diff)
+}
+
+extract_p_value_from_surv_diff <- function(diff)
+{
+  # inspired by print.survdiff from survival package
+  if (length(diff$n)==1)
+  {
+    pchisq(diff$chisq, 1, lower.tail = F)
+  }
+  else
+  {
+    if (is.matrix(diff$obs))
+    {
+      n_exp <- apply(diff$exp, 1, sum)
+    }
+    else
+    {
+      n_exp <- diff$exp
+    }
+    df <- (sum(1*(n_exp>0))) -1
+    pchisq(diff$chisq, df, lower.tail = F)
+  }
 }
 
 survivalFormatPValue <- function(p,

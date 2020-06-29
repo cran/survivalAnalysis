@@ -17,6 +17,7 @@
 #' @importFrom stats as.formula formula na.omit qnorm
 #' @importFrom utils capture.output
 #' @importFrom cowplot ggdraw draw_label
+#' @importFrom stats pchisq
 NULL
 
 ## quiets concerns of R CMD check regarding the .'s that appear in pipelines,

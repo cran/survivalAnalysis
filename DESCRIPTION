@@ -1,7 +1,7 @@
 Package: survivalAnalysis
 Type: Package
 Title: High-Level Interface for Survival Analysis and Associated Plots
-Version: 0.1.2
+Version: 0.1.3
 Author: Marcel Wiesweg [aut, cre]
 Authors@R: person("Marcel", "Wiesweg", email = "marcel.wiesweg@uk-essen.de", role = c("aut", "cre"))
 Maintainer: Marcel Wiesweg <marcel.wiesweg@uk-essen.de>
@@ -25,6 +25,6 @@ RoxygenNote: 7.1.0
 Suggests: knitr, rmarkdown, tidyverse
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-04-17 10:35:32 UTC; wiesweg
+Packaged: 2020-06-29 11:57:30 UTC; wiesweg
 Repository: CRAN
-Date/Publication: 2020-04-17 12:40:02 UTC
+Date/Publication: 2020-06-29 12:22:09 UTC
