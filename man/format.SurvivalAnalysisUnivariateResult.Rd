@@ -12,7 +12,7 @@
   hr_precision = 2,
   p_less_than_cutoff = 0.001,
   time_precision = 1,
-  include_end_separator = F,
+  include_end_separator = FALSE,
   timespan_unit = c("days", "months", "years")
 )
 }

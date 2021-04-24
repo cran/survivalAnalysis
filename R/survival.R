@@ -38,7 +38,13 @@
 #'    This is useful when plotting multiple results with a set of default arguments, of which some
 #'    such as title or axis scale differ per-plot.
 #'
-#' @return A named list which is an object of class "SurvivalAnalysisResult" and "SurvivalAnalysisUnivariateResult"
+#' @return An object of class "SurvivalAnalysisResult" and "SurvivalAnalysisUnivariateResult".
+#'    You can use this result as a black box for further functions in this package,
+#'    \code{\link[=format.SurvivalAnalysisUnivariateResult]{format}} or
+#'    \code{\link[=print.SurvivalAnalysisUnivariateResult]{print}} it,
+#'    retrieve information as a data frame via \code{\link{survival_data_frames}} or
+#'    access individual pieces via \code{\link{pluck_survival_analysis}}
+#'
 #' @export
 #'
 #' @examples
@@ -82,7 +88,7 @@ analyse_survival  <- function(data,
   {
     has_strata <- T
     data %>%
-      .build_column(factorQuosure, make_factor = T) ->
+      .build_column(factorQuosure, make_factor = TRUE) ->
     col_dfs
   }
 
@@ -93,7 +99,7 @@ analyse_survival  <- function(data,
 
   # col_dfs is a named list original names -> tibbles with one column, where column name is syntactically correct
   # build the subset data frame
-  data <- bind_cols(col_dfs)
+  data <- bind_cols(col_dfs, .name_repair = "minimal")
   # build a dict of mangled name -> original name
   colname_unmangle_dict <- set_names(names(col_dfs), colnames(data))
   values[["colname_unmangle_dict"]] <- colname_unmangle_dict
@@ -234,5 +240,4 @@ analyse_survival  <- function(data,
 #' @export
 #' @rdname analyse_survival
 analyze_survival <- analyse_survival
-
 

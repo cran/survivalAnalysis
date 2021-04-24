@@ -78,7 +78,7 @@ map(vars(age, sex, ph.ecog, wt.loss), function(by)
 survival::lung %>% 
   mutate(kras=sample(c("WT", "G12C", "G12V", "G12D", "G12A"), 
                      nrow(.), 
-                     replace = T, 
+                     replace = TRUE, 
                      prob = c(0.6, 0.24, 0.16, 0.06, 0.04))
           ) %>%
   analyse_survival(vars(time, status), by=kras) %>%

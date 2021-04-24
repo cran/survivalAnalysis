@@ -66,7 +66,12 @@ This is useful when plotting multiple results with a set of default arguments, o
 such as title or axis scale differ per-plot.}
 }
 \value{
-A named list which is an object of class "SurvivalAnalysisResult" and "SurvivalAnalysisUnivariateResult"
+An object of class "SurvivalAnalysisResult" and "SurvivalAnalysisUnivariateResult".
+   You can use this result as a black box for further functions in this package,
+   \code{\link[=format.SurvivalAnalysisUnivariateResult]{format}} or
+   \code{\link[=print.SurvivalAnalysisUnivariateResult]{print}} it,
+   retrieve information as a data frame via \code{\link{survival_data_frames}} or
+   access individual pieces via \code{\link{pluck_survival_analysis}}
 }
 \description{
 Performs survival analysis on right-censored data using a single covariate, or no covariate.

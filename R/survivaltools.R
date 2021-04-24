@@ -2,7 +2,7 @@
 # Extracts the p-value from a survdiff object
 pValueOfSurvDiff <- function(diff)
 {
-  possibly(extract_p_value_from_surv_diff, otherwise = NA, quiet = T)(diff)
+  possibly(extract_p_value_from_surv_diff, otherwise = NA, quiet = TRUE)(diff)
 }
 
 extract_p_value_from_surv_diff <- function(diff)
@@ -10,7 +10,7 @@ extract_p_value_from_surv_diff <- function(diff)
   # inspired by print.survdiff from survival package
   if (length(diff$n)==1)
   {
-    pchisq(diff$chisq, 1, lower.tail = F)
+    pchisq(diff$chisq, 1, lower.tail = FALSE)
   }
   else
   {
@@ -23,16 +23,16 @@ extract_p_value_from_surv_diff <- function(diff)
       n_exp <- diff$exp
     }
     df <- (sum(1*(n_exp>0))) -1
-    pchisq(diff$chisq, df, lower.tail = F)
+    pchisq(diff$chisq, df, lower.tail = FALSE)
   }
 }
 
 survivalFormatPValue <- function(p,
-                                 with_prefix = T,
+                                 with_prefix = TRUE,
                                  psprintfFormat = "%.3f",
                                  p.lessthan.cutoff = 0.001,
                                  NA_string = "NA",
-                                 pad_for_less_than=F)
+                                 pad_for_less_than=FALSE)
 {
   if (length(p) > 1)
   {
@@ -162,7 +162,7 @@ quo_category <- function(q)
 {
   result <- list()
   original_name <- quo_name(var)
-  colname <- tidy_names(original_name, syntactic = T, quiet = T)
+  colname <- tidy_names(original_name, syntactic = TRUE, quiet = TRUE)
   category <- quo_category(var)
   if (category == "language" || category == "symbol")
   {

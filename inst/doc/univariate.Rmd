@@ -119,7 +119,7 @@ kaplan_meier_plot(result,
                   break.time.by="breakByQuarterYear",
                   xlab=".OS.months",
                   legend.title="ECOG Status",
-                  hazard.ratio=T,
+                  hazard.ratio=TRUE,
                   risk.table=TRUE,
                   table.layout="clean",
                   ggtheme=ggplot2::theme_bw(10))
@@ -133,7 +133,7 @@ Internally, `gridExtra::marrangeGrob()` does the layout. For some reason, the re
 default_args <- list(break.time.by="breakByMonth",
                      xlab=".OS.months",
                      legend.title="ECOG Status",
-                     hazard.ratio=T,
+                     hazard.ratio=TRUE,
                      risk.table=TRUE,
                      table.layout="clean",
                      ggtheme=ggplot2::theme_bw(10))

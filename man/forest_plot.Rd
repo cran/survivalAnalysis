@@ -7,7 +7,7 @@
 \usage{
 forest_plot(
   ...,
-  use_one_hot = F,
+  use_one_hot = FALSE,
   factor_labeller = identity,
   endpoint_labeller = identity,
   orderer = identity_order,
@@ -21,7 +21,7 @@ forest_plot(
   HRsprintfFormat = "\%.2f",
   psprintfFormat = "\%.3f",
   p_lessthan_cutoff = 0.001,
-  log_scale = T,
+  log_scale = TRUE,
   HR_x_breaks = seq(0, 10),
   HR_x_limits = NULL,
   factor_id_sep = ":",
@@ -47,7 +47,7 @@ forest_plot.df(
   HRsprintfFormat = "\%.2f",
   psprintfFormat = "\%.3f",
   p_lessthan_cutoff = 0.001,
-  log_scale = T,
+  log_scale = TRUE,
   HR_x_breaks = seq(0, 10),
   HR_x_limits = NULL,
   factor_id_sep = ":",
@@ -80,8 +80,8 @@ level vs. remaining cohort, resulting in k values for k levels.}
 \item a dictionaryish list, looks up by (endpoints) or (factor.ids).
     The factor.id value: For continous factors, the factor name (column name in data frame);
     For categorical factors, factor name, factor_id_sep, and the factor level value.
-    (note: If use_one_hot = F, the HR is factor level value vs. cox reference given to survival_analysis;
-     if use_one_hot = T, the HR is the factor level value vs. remaining population)
+    (note: If use_one_hot = FALSE, the HR is factor level value vs. cox reference given to survival_analysis;
+     if use_one_hot = TRUE, the HR is the factor level value vs. remaining population)
  }}
 
 \item{orderer}{A function which returns an integer ordering vector for the input:
@@ -125,7 +125,7 @@ and in which order.}
 \item{label_headers}{Named vector with name=<allowed values of labels_displayed>, value=<your heading>.}
 
 \item{values_displayed}{Combination of "HR", "CI", "p", "subgroup_n", determining what is shown on the right-hand table
-and in which order. Note: subgroup_n is only applicable if oneHot=T.}
+and in which order. Note: subgroup_n is only applicable if oneHot=TRUE.}
 
 \item{value_headers}{Named vector with name=<allowed values of values_displayed>, value=<your heading>.}
 
@@ -146,7 +146,7 @@ Pass a vector of size 2 to specify (min, max) manually}
 
 \item{factor_id_sep}{Allows you to customize the separator of the factor id, the documentation of factor_labeller.}
 
-\item{na_rm}{Only used in the multivariate case (use_one_hot = F). Should null coefficients (NA/0/Inf) be removed?}
+\item{na_rm}{Only used in the multivariate case (use_one_hot = FALSE). Should null coefficients (NA/0/Inf) be removed?}
 
 \item{title, title_relative_height, title_label_args}{A title on top of the plot, taking a fraction of title_relative_height of the returned plot.
 The title is drawn using draw_label; you can specify any arguments to this function by giving title_label_args
@@ -171,7 +171,7 @@ A ggplot2 plot object
 }
 \description{
 Creates a forest plot from SurvivalAnalysisResult objects.
-Both univariate (\code{\link{analyse_survival}}) results, typically with use_one_hot=T,
+Both univariate (\code{\link{analyse_survival}}) results, typically with use_one_hot=TRUE,
 and multivariate (\code{\link{analyse_multivariate}}) results are acceptable.
 }
 \details{
@@ -193,5 +193,5 @@ survival::colon \%>\%
    forest_plot()
 }
 \seealso{
-forest_plot_grid
+\code{\link{forest_plot_grid}}
 }

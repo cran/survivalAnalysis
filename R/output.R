@@ -138,7 +138,7 @@
          coxphsummary$coefficients[i, "Pr(>|z|)"],
          exp(-coxphsummary$coefficients[i, "coef"] + c(qnorm(0.025), 0, qnorm(0.975)) * coxphsummary$coefficients[i, "se(coef)"]),
          coxphsummary$coefficients[i, "Pr(>|z|)"] ),
-      nrow = 2, byrow = T)
+      nrow = 2, byrow = TRUE)
     #TODO: Check if > 2 factors
     hrlabel <- str_c(cox_labels[i], " vs. ", reference_level)
     hrlabelInv <- str_c(reference_level, " vs. ", cox_labels[i])
@@ -267,6 +267,64 @@ survival_data_frames <- function(result,
 }
 
 
+#' Access individual components of univariate survival analysis
+#'
+#' Allows access to the \code{\link{analyse_survival}} result object.
+#'
+#' @param result An object of class SurvivalAnalysisUnivariateResult
+#'               as returned by \code{\link{analyse_survival}}
+#' @param term   The item to be retrieved:
+#'    \itemize{
+#'      \item \code{"survfit"} containing the result of the \code{\link{survfit}} function
+#'      \item \code{"survdiff"} containing the result of the \code{\link{survdiff}} function
+#'      \item \code{"survfit_overall"} containing the result of the \code{\link{survfit}}
+#'            function without terms, i.e. the full group not comparing subgroups
+#'      \item \code{"coxph"} containing the result of the \code{\link{coxph}} function
+#'      \item \code{"p"} The log-rank p value (if \code{by} provided at least two strata)
+#'    }
+#' @return object as specified by \code{term}, or NULL if not contained in \code{result}
+
+#' @export
+#'
+#' @examples
+#' library(magrittr)
+#' library(dplyr)
+#' survival::aml %>%
+#'   analyse_survival(vars(time, status), x) %>%
+#'   pluck_survival_analysis("p") %>%
+#'   print
+pluck_survival_analysis  <- function(result, term)
+{
+  if (!inherits(result, "SurvivalAnalysisUnivariateResult"))
+  {
+    stop("pluck_survival_analysis called with inappropriate object, type ", type_of(result), " class ", class(result))
+  }
+
+  if (term == "survfit")
+  {
+    result[["fit"]]
+  }
+  else if (term == "survfit_overall")
+  {
+    result[["fitOverall"]]
+  }
+  else if (term == "coxph")
+  {
+    result[["coxph"]]
+  }
+  if (term == "survdiff")
+  {
+    result[["diff"]]
+  }
+  else if (term == "p")
+  {
+    pValueOfSurvDiff(result[["diff"]])
+  }
+  else
+  {
+    stop("pluck_survival_analysis called with inappropriate term ", term)
+  }
+}
 
 #' Formats a SurvivalAnalysisUnivariateResult for printing
 #'
@@ -287,7 +345,7 @@ format.SurvivalAnalysisUnivariateResult <- function(x,
                                                     hr_precision = 2,
                                                     p_less_than_cutoff = 0.001,
                                                     time_precision = 1,
-                                                    include_end_separator = F,
+                                                    include_end_separator = FALSE,
                                                     timespan_unit = c("days", "months", "years"))
 {
   if (!inherits(x, "SurvivalAnalysisUnivariateResult"))
@@ -310,24 +368,24 @@ format.SurvivalAnalysisUnivariateResult <- function(x,
   dfs <- list()
   dfs[["Overall Analysis:"]] <-
     .overall_metadata(x,
-                      T,
+                      TRUE,
                       p_precision,
                       time_precision,
                       p_less_than_cutoff,
                       timespan_unit)
   dfs[["Descriptive Statistics per Subgroup:"]] <-
     .per_stratum_metadata(x,
-                          T,
+                          TRUE,
                           time_precision,
                           timespan_unit)
   dfs[["Pair-wise p-values (log-rank, uncorrected):"]] <-
-    .stratum_pairwise_p(x, T, p_precision)
+    .stratum_pairwise_p(x, TRUE, p_precision)
 
   dfs[[if_else(.n_strata(x)>2,
                "Pair-wise Hazard Ratios:",
                "Hazard Ratio:")]] <-
     .per_stratum_hrs(x,
-                     T,
+                     TRUE,
                      p_precision,
                      hr_precision,
                      p_less_than_cutoff)
@@ -386,6 +444,7 @@ format.SurvivalAnalysisUnivariateResult <- function(x,
 #' Print the essentials of a SurvivalAnalysisUnivariateResult
 #'
 #' @inheritParams format.SurvivalAnalysisUnivariateResult
+#' @return The formatted string, invisibly.
 #' @export
 print.SurvivalAnalysisUnivariateResult <- function(x,
                                                    ...,
@@ -393,7 +452,7 @@ print.SurvivalAnalysisUnivariateResult <- function(x,
                                                    p_precision = 3,
                                                    hr_precision = 2,
                                                    time_precision = 1,
-                                                   include_end_separator = F,
+                                                   include_end_separator = FALSE,
                                                    timespan_unit = c("days", "months", "years"))
 {
   str <- format.SurvivalAnalysisUnivariateResult(x,
@@ -427,9 +486,9 @@ survival_essentials <- function(result,
                                 p_precision = 3,
                                 hr_precision = 2,
                                 time_precision = 1,
-                                include_end_separator = T,
+                                include_end_separator = TRUE,
                                 timespan_unit = "days",
-                                print = T)
+                                print = TRUE)
 {
   if (invalid(label))
   {

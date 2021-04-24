@@ -11,7 +11,7 @@
   p_precision = 3,
   hr_precision = 2,
   time_precision = 1,
-  include_end_separator = F,
+  include_end_separator = FALSE,
   timespan_unit = c("days", "months", "years")
 )
 }
@@ -31,6 +31,9 @@
 \item{include_end_separator}{Append "\\n---\\n"? Comes handy if printing multiple results following each other}
 
 \item{timespan_unit}{Unit for time spans: "days", "months" or "years".}
+}
+\value{
+The formatted string, invisibly.
 }
 \description{
 Print the essentials of a SurvivalAnalysisUnivariateResult

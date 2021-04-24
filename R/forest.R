@@ -18,7 +18,7 @@ identity_order <- function(x, ...)
 #' Forest plots for survival analysis.
 #'
 #' Creates a forest plot from SurvivalAnalysisResult objects.
-#' Both univariate (\code{\link{analyse_survival}}) results, typically with use_one_hot=T,
+#' Both univariate (\code{\link{analyse_survival}}) results, typically with use_one_hot=TRUE,
 #' and multivariate (\code{\link{analyse_multivariate}}) results are acceptable.
 #'
 #' The plot has a left column containing the labels (covariate name, levels for categorical variables, optionally subgroup size),
@@ -47,8 +47,8 @@ identity_order <- function(x, ...)
 #'     \item a dictionaryish list, looks up by (endpoints) or (factor.ids).
 #'         The factor.id value: For continous factors, the factor name (column name in data frame);
 #'         For categorical factors, factor name, factor_id_sep, and the factor level value.
-#'         (note: If use_one_hot = F, the HR is factor level value vs. cox reference given to survival_analysis;
-#'          if use_one_hot = T, the HR is the factor level value vs. remaining population)
+#'         (note: If use_one_hot = FALSE, the HR is factor level value vs. cox reference given to survival_analysis;
+#'          if use_one_hot = TRUE, the HR is the factor level value vs. remaining population)
 #'      }
 #' @param orderer  A function which returns an integer ordering vector for the input:
 #'     \itemize{
@@ -85,7 +85,7 @@ identity_order <- function(x, ...)
 #'     and in which order.
 #' @param label_headers  Named vector with name=<allowed values of labels_displayed>, value=<your heading>.
 #' @param values_displayed Combination of "HR", "CI", "p", "subgroup_n", determining what is shown on the right-hand table
-#'     and in which order. Note: subgroup_n is only applicable if oneHot=T.
+#'     and in which order. Note: subgroup_n is only applicable if oneHot=TRUE.
 #' @param value_headers  Named vector with name=<allowed values of values_displayed>, value=<your heading>.
 #' @param HRsprintfFormat,psprintfFormat sprintf() format strings for hazard ratio and p value
 #' @param p_lessthan_cutoff The lower limit below which p value will be displayed as "less than".
@@ -98,7 +98,7 @@ identity_order <- function(x, ...)
 #'     Pass NA to use the existing minimum and maximum values without interference.
 #'     Pass a vector of size 2 to specify (min, max) manually
 #' @param factor_id_sep Allows you to customize the separator of the factor id, the documentation of factor_labeller.
-#' @param na_rm Only used in the multivariate case (use_one_hot = F). Should null coefficients (NA/0/Inf) be removed?
+#' @param na_rm Only used in the multivariate case (use_one_hot = FALSE). Should null coefficients (NA/0/Inf) be removed?
 #' @param title,title_relative_height,title_label_args A title on top of the plot, taking a fraction of title_relative_height of the returned plot.
 #'     The title is drawn using draw_label; you can specify any arguments to this function by giving title_label_args
 #'     Per default, font attributes are taken from the "title" entry from the given ggtheme, and the label
@@ -110,7 +110,7 @@ identity_order <- function(x, ...)
 #'     It will also store a "forestplot_entries" attribute which you can use for your own calculations.
 #'
 #' @return A ggplot2 plot object
-#' @seealso forest_plot_grid
+#' @seealso \code{\link{forest_plot_grid}}
 #' @export
 #'
 #' @examples
@@ -121,7 +121,7 @@ identity_order <- function(x, ...)
 #'                         vars(rx, sex, age, obstruct, perfor, nodes, differ, extent)) %>%
 #'    forest_plot()
 forest_plot <- function(...,
-                        use_one_hot = F,
+                        use_one_hot = FALSE,
                         factor_labeller = identity,
                         endpoint_labeller = identity,
                         orderer = identity_order,
@@ -135,7 +135,7 @@ forest_plot <- function(...,
                         HRsprintfFormat = "%.2f",
                         psprintfFormat = "%.3f",
                         p_lessthan_cutoff = 0.001,
-                        log_scale = T,
+                        log_scale = TRUE,
                         HR_x_breaks = seq(0,10),
                         HR_x_limits = NULL,
                         factor_id_sep = ":",
@@ -177,7 +177,7 @@ forest_plot <- function(...,
 # or coxph objects, or a mix thereof,
 # to a data frame containing the columns:
 # survivalResult, endpoint, factor.id, factor.name, factor.value, HR, Lower_CI, Upper_CI, p, n, subgroup_n
-cox_results_df <- function(..., use_one_hot = F, factor_id_sep=":")
+cox_results_df <- function(..., use_one_hot = FALSE, factor_id_sep=":")
 {
   args <- .survivalResultArguments(...)
 
@@ -279,7 +279,7 @@ forest_plot.df <- function(.df,
                            HRsprintfFormat = "%.2f",
                            psprintfFormat = "%.3f",
                            p_lessthan_cutoff = 0.001,
-                           log_scale = T,
+                           log_scale = TRUE,
                            HR_x_breaks = seq(0,10),
                            HR_x_limits = NULL,
                            factor_id_sep = ":",
@@ -394,7 +394,7 @@ forest_plot.df <- function(.df,
                                                      function(v)
                                                      {
                                                        # split in lines
-                                                       lines <- c(str_split(v, "\\n", simplify = T))
+                                                       lines <- c(str_split(v, "\\n", simplify = TRUE))
                                                        # max string width of all lines of the value
                                                        max(map_dbl(lines,
                                                                    ~strwidth(., family = ggtheme$text$family, units = "in")))
@@ -437,10 +437,10 @@ forest_plot.df <- function(.df,
            n_string = remove_sequential_duplicates_unless_breakafter(n_string, ordered_index, breakAfter)) %>%
     select(-breakAfter) %>%
     # Add title row. bind_rows does not use tidy eval, need to ".$"
-    bind_rows( data_frame(ordered_index=max(.$ordered_index)+1,
-                          endpointLabel = label_headers[["endpoint"]],
-                          factorLabel = label_headers[["factor"]],
-                          n_string = label_headers[["n"]]) ) %>%
+    bind_rows( tibble(ordered_index=max(.$ordered_index)+1,
+                      endpointLabel = label_headers[["endpoint"]],
+                      factorLabel = label_headers[["factor"]],
+                      n_string = label_headers[["n"]]) ) %>%
     select(ordered_index, !!!label_string_vars_to_draw) %>%
     # endpointLabel and factorLabel will share x values -> gather in key-value arrangement
     gather(x, labels, !!!label_string_vars_to_draw) ->
@@ -462,28 +462,28 @@ forest_plot.df <- function(.df,
     mutate(CI_string = paste0("(", sprintf(HRsprintfFormat, Lower_CI),
                               "\u2013", sprintf(HRsprintfFormat, Upper_CI), ")"),
            HR_string = sprintf(HRsprintfFormat, HR),
-           p_string  = survivalFormatPValue(p, with_prefix = F,
+           p_string  = survivalFormatPValue(p, with_prefix = FALSE,
                                             p.lessthan.cutoff = p_lessthan_cutoff,
                                             psprintfFormat = psprintfFormat,
-                                            pad_for_less_than=T),
+                                            pad_for_less_than=TRUE),
            n_string  = str_c(n),
            subgroup_n_string = str_c(subgroup_n)
     ) %>%
     # we only need these
     select(ordered_index, !!!value_string_vars) %>%
     # Add header row. bind_rows does not use tidy eval, need to ".$"
-    bind_rows( data_frame(ordered_index=max(.$ordered_index)+1,
-                          HR_string = lookup_chr(value_headers, "HR"),
-                          CI_string = lookup_chr(value_headers, "CI"),
-                          p_string = lookup_chr(value_headers, "p"),
-                          n_string = lookup_chr(value_headers, "n"),
-                          subgroup_n_string = lookup_chr(value_headers, "subgroup_n")) ) %>%
+    bind_rows( tibble(ordered_index=max(.$ordered_index)+1,
+                      HR_string = lookup_chr(value_headers, "HR"),
+                      CI_string = lookup_chr(value_headers, "CI"),
+                      p_string = lookup_chr(value_headers, "p"),
+                      n_string = lookup_chr(value_headers, "n"),
+                      subgroup_n_string = lookup_chr(value_headers, "subgroup_n")) ) %>%
     select(ordered_index, !!!value_string_vars_to_draw) %>%
     gather(x, labels, !!!value_string_vars_to_draw) ->
   valuesDf
 
   # Now (after getting the labels) take care for the "-Inf" for log(0) if a Cox computation did not converge
-  # (only if na_rm = F)
+  # (only if na_rm = FALSE)
   if (log_scale)
   {
     hrDf %<>% mutate(HR=replace(HR, near(HR, 0), NA),
@@ -551,8 +551,8 @@ forest_plot.df <- function(.df,
     {
       max_x_limits <- c(0, 100)
     }
-    HR_x_limits <- c(max(max_x_limits[[1]], min(hrDf$HR, hrDf$Lower_CI, na.rm = T)),
-                     min(max_x_limits[[2]], max(hrDf$HR, hrDf$Upper_CI, na.rm = T)))
+    HR_x_limits <- c(max(max_x_limits[[1]], min(hrDf$HR, hrDf$Lower_CI, na.rm = TRUE)),
+                     min(max_x_limits[[2]], max(hrDf$HR, hrDf$Upper_CI, na.rm = TRUE)))
   }
 
 
@@ -640,7 +640,7 @@ forest_plot.df <- function(.df,
 #'
 #' @param ... Pass individual plots returned by forest_plot, or lists of such plots (bare lists will be spliced).
 #' @param nrow,ncol Specify the grid (one is sufficient, uses auto layout if both are null)
-#' @param byrow If the plots are given in by-row, or by-column (byrow=F) order
+#' @param byrow If the plots are given in by-row, or by-column (byrow=FALSE) order
 #' @param plot_grid_args Additional arguments to the \code{\link{plot_grid}} function which is used to create the grid.
 #'
 #' @return Return value of \code{\link{plot_grid}}
@@ -648,7 +648,7 @@ forest_plot.df <- function(.df,
 forest_plot_grid <- function(...,
                              nrow = NULL,
                              ncol = NULL,
-                             byrow = T,
+                             byrow = TRUE,
                              plot_grid_args = list())
 {
   plots <- dots_splice(...)
@@ -662,7 +662,7 @@ forest_plot_grid <- function(...,
 
   if (!byrow)
   {
-    plots <- .convert_rowness(plots, nrow, ncol, T)
+    plots <- .convert_rowness(plots, nrow, ncol, TRUE)
   }
 
   widths <- map_dbl(plots, ~attr(., "papersize")[[1]])

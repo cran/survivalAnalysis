@@ -8,7 +8,7 @@ forest_plot_grid(
   ...,
   nrow = NULL,
   ncol = NULL,
-  byrow = T,
+  byrow = TRUE,
   plot_grid_args = list()
 )
 }
@@ -17,7 +17,7 @@ forest_plot_grid(
 
 \item{nrow, ncol}{Specify the grid (one is sufficient, uses auto layout if both are null)}
 
-\item{byrow}{If the plots are given in by-row, or by-column (byrow=F) order}
+\item{byrow}{If the plots are given in by-row, or by-column (byrow=FALSE) order}
 
 \item{plot_grid_args}{Additional arguments to the \code{\link{plot_grid}} function which is used to create the grid.}
 }

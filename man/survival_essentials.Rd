@@ -10,9 +10,9 @@ survival_essentials(
   p_precision = 3,
   hr_precision = 2,
   time_precision = 1,
-  include_end_separator = T,
+  include_end_separator = TRUE,
   timespan_unit = "days",
-  print = T
+  print = TRUE
 )
 }
 \arguments{

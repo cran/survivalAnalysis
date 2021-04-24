@@ -15,7 +15,9 @@
 #'     \item hazard.ratio (logical): display hazard ratios in addition to p value, complementing pval=T
 #'     \item xlab: \{.OS,.PFS,.TTF,.DFS\}.\{years,months,days\}
 #'     \item table.layout: clean, displays risk table only with color code and number, no grid, axes or labels.
-#'           (do not forget risk.table=T to see something)
+#'           (do not forget risk.table=TRUE to see something)
+#'     \item papersize: numeric vector of length 2, c(width, height), unit inches. kaplan_meier_plot
+#'           will store a "papersize" attribute with this value which is read by \code{\link{save_pdf}}
 #'     }
 #' @param mapped_plot_args Optionally, if given n objects to plot, a named list of vectors of size n.
 #'     The name is an argument names passed to ggsurvplot. The elements of the vector will be mapped 1:1 to each object.
@@ -86,7 +88,7 @@ kaplan_meier_plot <- function(...,
   }
 }
 
-.convert_rowness <- function(x, nrow, ncol, order_is_byrow, cut_trailing_na = F)
+.convert_rowness <- function(x, nrow, ncol, order_is_byrow, cut_trailing_na = FALSE)
 {
   byrow_order <- matrix(seq_len(nrow *  ncol), nrow = nrow, ncol = ncol, byrow=order_is_byrow) %>% as.vector()
   # matrix may be larger than length of x. Then there are NULLs/NAs in x.
@@ -115,7 +117,7 @@ kaplan_meier_plot <- function(...,
 #' @param nrow,ncol Determines the layout by giving nrow and/or ncol, if missing, uses an auto layout.
 #' @param layout_matrix Optionally specify a layout matrix, which is passed to \code{gridExtra::\link{marrangeGrob}}
 #' @param byrow If no layout_matrix is specified and there are multiple rows: How should the plots by layout?
-#'     The order of the plots can be by-row (default) or by-col (set byrow=F).
+#'     The order of the plots can be by-row (default) or by-col (set byrow=FALSE).
 #' @param mapped_plot_args Optionally, if given n objects to plot, a named list of vectors of size n.
 #'     The name is an argument names passed to ggsurvplot. The elements of the vector will be mapped 1:1 to each object.
 #'     This allows to perform batch plotting where only few arguments differ (e.g. titles A, B, C...) between the plots.
@@ -133,7 +135,7 @@ kaplan_meier_grid <- function(...,
                               nrow = NULL,
                               ncol = NULL,
                               layout_matrix = NULL,
-                              byrow = T,
+                              byrow = TRUE,
                               mapped_plot_args = list(),
                               paperwidth = NULL,
                               paperheight = NULL,
@@ -242,7 +244,7 @@ kaplan_meier_grid <- function(...,
   # {
   #   # arrange_ggsurvplot expects plot by-column, as default by matrix().
   #   # Our default is byrow. Use matrix() to reorder by-row -> by-column
-  #   plots <- .convert_rowness(plots, nrow, ncol, T)
+  #   plots <- .convert_rowness(plots, nrow, ncol, TRUE)
   #   # this may introduce intermediate NULL entries, which we cannot easily resolve
   #   missing <- map_lgl(plots, is_null)
   #   if (any(missing))
@@ -254,7 +256,7 @@ kaplan_meier_grid <- function(...,
   #
   # arrangelist <-
   #   arrange_ggsurvplots(plots,
-  #                       print = F,
+  #                       print = FALSE,
   #                       ncol = ncol, nrow = nrow,
   #                       title = title,
   #                       surv.plot.height = surv.plot.height,
@@ -287,7 +289,7 @@ ggsurvplot_to_gtable <- function(ggsurv_obj,
   arrangelist <- arrange_ggsurvplots(list(ggsurv_obj),
                                      nrow = 1,
                                      ncol = 1,
-                                     print = F,
+                                     print = FALSE,
                                      surv.plot.height = surv.plot.height,
                                      risk.table.height = risk.table.height,
                                      ncensor.plot.height = ncensor.plot.height)
@@ -367,9 +369,9 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
     ylab = "Cumulative Survival",
     xscale = scaleByMonths,
     break.time.by = "breakByMonth",
-    pval = T, pval.size = 3,
+    pval = TRUE, pval.size = 3,
     legend = c(0.8, 0.8), legend.title = "",
-    axes.offset = T, censor.shape = "|", censor.size = 3))
+    axes.offset = TRUE, censor.shape = "|", censor.size = 3))
 }
 
 
@@ -409,7 +411,7 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
           plot.margin = margin(0,0,2,0)
         )
       table_args <- list(risk.table.title="",
-                         tables.y.text = F,
+                         tables.y.text = FALSE,
                          risk.table.fontsize=table_font_size/ggplot2::.pt,
                          tables.theme = table_theme,
                          tables.height = 0.1)
@@ -474,7 +476,7 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
     if ("pval" %in% names(survminerArgs) && is.logical(survminerArgs[["pval"]]) && survminerArgs[["pval"]])
     {
       # pass value instead of letting survminer calculate the p-value, which fails sometimes
-      survminerArgs[["pval"]] <- survivalFormatPValue(pValueOfSurvDiff(result$diff), with_prefix = T,
+      survminerArgs[["pval"]] <- survivalFormatPValue(pValueOfSurvDiff(result$diff), with_prefix = TRUE,
                                                       p.lessthan.cutoff = p.lessthan.cutoff)
     }
     if ("hazard.ratio" %in% names(survminerArgs))
@@ -484,7 +486,7 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
         if (survminerArgs[["hazard.ratio"]] && .has_strata(result))
         {
           df <- .per_stratum_hrs(result,
-                                 format_numbers = T,
+                                 format_numbers = TRUE,
                                  p_precision = 3,
                                  hr_precision =  2,
                                  p_less_than_cutoff = 0.001)
@@ -572,17 +574,32 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
   tickslab.y <- survminerArgs[["tickslab.y"]]
   survminerArgs[["tickslab.x"]] <- NULL
   survminerArgs[["tickslab.y"]] <- NULL
+  papersize <- survminerArgs[["papersize"]]
+  survminerArgs[["papersize"]] <- NULL
 
   survplotArgs <- c(list(result$fit, data = result$data), survminerArgs)
   plot <- do.call(ggsurvplot, survplotArgs)
 
-  if (!is.null(tickslab.x) && tickslab.x == F)
+  if (!is.null(tickslab.x) && tickslab.x == FALSE)
   {
     plot$plot <- plot$plot + theme(axis.text.x = element_blank())
   }
-  if (!is.null(tickslab.y) && tickslab.y == F)
+  if (!is.null(tickslab.y) && tickslab.y == FALSE)
   {
     plot$plot <- plot$plot + theme(axis.text.y = element_blank())
+  }
+
+  if (!is.null(papersize))
+  {
+    if (!is.numeric(papersize) || length(papersize) != 2)
+    {
+      warning("papersize must be a numeric vector of length 2. Ignoring.")
+    }
+    else
+    {
+      plot %<>%
+        set_attrs(papersize = papersize)
+    }
   }
 
   plot

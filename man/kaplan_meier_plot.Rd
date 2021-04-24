@@ -20,7 +20,9 @@ In addition to all arguments supported by \code{\link{ggsurvplot}}, these argume
 \item hazard.ratio (logical): display hazard ratios in addition to p value, complementing pval=T
 \item xlab: \{.OS,.PFS,.TTF,.DFS\}.\{years,months,days\}
 \item table.layout: clean, displays risk table only with color code and number, no grid, axes or labels.
-      (do not forget risk.table=T to see something)
+      (do not forget risk.table=TRUE to see something)
+\item papersize: numeric vector of length 2, c(width, height), unit inches. kaplan_meier_plot
+      will store a "papersize" attribute with this value which is read by \code{\link{save_pdf}}
 }}
 
 \item{mapped_plot_args}{Optionally, if given n objects to plot, a named list of vectors of size n.

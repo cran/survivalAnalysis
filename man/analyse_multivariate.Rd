@@ -60,7 +60,12 @@ This frame contains the variables "Lower_CI", "HR", "Upper_CI", "Inv_Lower_CI", 
 You can specify by which variables the frame should be sorted. Default: Hazard Ratio.}
 }
 \value{
-A named list which is an object of class "SurvivalAnalysisResult" and "SurvivalAnalysisMultivariateResult"
+An object of class "SurvivalAnalysisResult" and "SurvivalAnalysisMultivariateResult".
+   You can use this result as a black box for further functions in this package,
+   \code{\link[=format.SurvivalAnalysisMultivariateResult]{format}} or
+   \code{\link[=print.SurvivalAnalysisMultivariateResult]{print}} it,
+   retrieve information as a data frame via \code{\link{multivariate_as_data_frame}} or
+   access individual pieces via \code{\link{pluck_multivariate_analysis}}
 }
 \description{
 Performs Cox regression on right-censored data using a multiple covariates.
@@ -79,5 +84,5 @@ survival::colon \%>\%
    print()
 }
 \seealso{
-forest_plot
+\code{\link{forest_plot}}
 }
