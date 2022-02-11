@@ -100,9 +100,9 @@ identity_order <- function(x, ...)
 #' @param factor_id_sep Allows you to customize the separator of the factor id, the documentation of factor_labeller.
 #' @param na_rm Only used in the multivariate case (use_one_hot = FALSE). Should null coefficients (NA/0/Inf) be removed?
 #' @param title,title_relative_height,title_label_args A title on top of the plot, taking a fraction of title_relative_height of the returned plot.
-#'     The title is drawn using draw_label; you can specify any arguments to this function by giving title_label_args
+#'     The title is drawn using \code{\link{draw_label}}; you can specify any arguments to this function by giving title_label_args
 #'     Per default, font attributes are taken from the "title" entry from the given ggtheme, and the label
-#'     is drawn centered as per draw_label defaults.
+#'     is drawn centered as per \code{\link{draw_label}} defaults.
 #' @param base_papersize numeric vector of length 2, c(width, height), unit inches.
 #'     forest_plot will store a suggested "papersize" attribute in the return value, computed from
 #'     base_papersize and the number of entries in the plot (in particular, the height will be adjusted)
@@ -626,7 +626,7 @@ forest_plot.df <- function(.df,
   # subplots have zero margin; add global margin from theme
   plot <- plot + theme(plot.margin = plot_margin)
 
-  plot %<>% set_attrs(forestplot_entries=max_ordered_index,
+  plot %<>% structure(forestplot_entries=max_ordered_index,
                       papersize = c(width = base_papersize[[1]] * relative_text_size,
                                     height = base_papersize[[2]]*max_ordered_index/20*relative_text_size)) # 20 is a heuristic constant
 
@@ -691,5 +691,5 @@ forest_plot_grid <- function(...,
                                 nrow = nrow,
                                 ncol = ncol)
   do.call(cowplot::plot_grid, plot_grid_args) %>%
-    set_attrs(papersize = c(width = width, height = height))
+    structure(papersize = c(width = width, height = height))
 }

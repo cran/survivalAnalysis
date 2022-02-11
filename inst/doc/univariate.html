@@ -12,7 +12,7 @@
 
 <meta name="author" content="Marcel Wiesweg" />
 
-<meta name="date" content="2021-04-23" />
+<meta name="date" content="2022-02-11" />
 
 <title>Univariate Survival Analysis</title>
 
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">Univariate Survival Analysis</h1>
 <h4 class="author">Marcel Wiesweg</h4>
-<h4 class="date">2021-04-23</h4>
+<h4 class="date">2022-02-11</h4>
 
 
 
@@ -322,16 +322,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The ECOG performance status is a classical prognostic indicator. To get a feeling for the data, let’s first have a look how it is distributed. The <code>count_by</code> method from <code>tidytidbits</code> comes handy.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>survival<span class="sc">::</span>lung <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count_by</span>(ph.ecog)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Please use the `.add` argument instead.</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 x 4</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ph.ecog     n     rel percent</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;  </span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1       0    63 0.276   &quot;27.6%&quot;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2       1   113 0.496   &quot;49.6%&quot;</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3       2    50 0.219   &quot;21.9%&quot;</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       3     1 0.00439 &quot; 0.4%&quot;</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5      NA     1 0.00439 &quot; 0.4%&quot;</span></span></code></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 x 4</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ph.ecog     n     rel percent</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;  </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1       0    63 0.276   &quot;27.6%&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2       1   113 0.496   &quot;49.6%&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3       2    50 0.219   &quot;21.9%&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       3     1 0.00439 &quot; 0.4%&quot;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5      NA     1 0.00439 &quot; 0.4%&quot;</span></span></code></pre></div>
 <p>There is only one subject with ECOG 3. It makes sense to group 2 und 3 together. Then we perform the survival analysis comparing the subgroups formed by the ECOG status. We store the result object for later use.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>survival<span class="sc">::</span>lung <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ecog=</span><span class="fu">recode_factor</span>(ph.ecog, <span class="st">`</span><span class="at">0</span><span class="st">`</span><span class="ot">=</span><span class="st">&quot;0&quot;</span>, <span class="st">`</span><span class="at">1</span><span class="st">`</span><span class="ot">=</span><span class="st">&quot;1&quot;</span>, <span class="st">`</span><span class="at">2</span><span class="st">`</span><span class="ot">=</span><span class="st">&quot;2-3&quot;</span>, <span class="st">`</span><span class="at">3</span><span class="st">`</span><span class="ot">=</span><span class="st">&quot;2-3&quot;</span>)) <span class="sc">%&gt;%</span></span>

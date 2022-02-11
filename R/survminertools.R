@@ -265,7 +265,7 @@ kaplan_meier_grid <- function(...,
 
   if (!is_null(paperwidth) && !is_null(paperheight))
   {
-    arrangelist <- set_attrs(arrangelist, papersize = c(width=paperwidth, height=paperheight))
+    arrangelist <- structure(arrangelist, papersize = c(width=paperwidth, height=paperheight))
   }
   invisible(arrangelist)
 }
@@ -450,16 +450,15 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
   }
   if ("xscale" %in% names(survminerArgs) && is.character(survminerArgs[["xscale"]]) )
   {
-    if (startsWith(survminerArgs[["break.time.by"]], "scaleByYear"))
+    if (startsWith(survminerArgs[["xscale"]], "scaleByYear"))
     {
-      survminerArgs[["xscale"]] <- scaleByYears
+      survminerArgs[["xscale"]] <- "d_y"
     }
-    else if (startsWith(survminerArgs[["break.time.by"]], "scaleByMonth"))
+    else if (startsWith(survminerArgs[["xscale"]], "scaleByMonth"))
     {
-      survminerArgs[["xscale"]] <- scaleByMonths
+      survminerArgs[["xscale"]] <- "d_m"
     }
-    else
-      stop("Unsupported text argument to xscale: ", survminerArgs[["xscale"]])
+    # else leave as is
   }
 
 
@@ -598,7 +597,7 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
     else
     {
       plot %<>%
-        set_attrs(papersize = papersize)
+        structure(papersize = papersize)
     }
   }
 

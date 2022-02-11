@@ -1,3 +1,10 @@
+# survivalAnalysis 0.3.0
+
+* add the write_survival method allowing to write the formatted summary
+  of an survival analysis result into a text file, for use when
+  writing your paper
+* adapt to API changes/lifecycle in dependencies
+
 # survivalAnalysis 0.2.0
 
 * add the methods pluck_survival_analysis and pluck_multivariate_analysis

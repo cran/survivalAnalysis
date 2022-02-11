@@ -149,9 +149,9 @@ Pass a vector of size 2 to specify (min, max) manually}
 \item{na_rm}{Only used in the multivariate case (use_one_hot = FALSE). Should null coefficients (NA/0/Inf) be removed?}
 
 \item{title, title_relative_height, title_label_args}{A title on top of the plot, taking a fraction of title_relative_height of the returned plot.
-The title is drawn using draw_label; you can specify any arguments to this function by giving title_label_args
+The title is drawn using \code{\link{draw_label}}; you can specify any arguments to this function by giving title_label_args
 Per default, font attributes are taken from the "title" entry from the given ggtheme, and the label
-is drawn centered as per draw_label defaults.}
+is drawn centered as per \code{\link{draw_label}} defaults.}
 
 \item{base_papersize}{numeric vector of length 2, c(width, height), unit inches.
 forest_plot will store a suggested "papersize" attribute in the return value, computed from
