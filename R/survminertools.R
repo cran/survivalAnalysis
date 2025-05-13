@@ -1,14 +1,17 @@
 #' Kaplan Meier plots from survival results.
 #'
-#' Uses \code{\link{ggsurvplot}} from the survminer package to create publication-ready plots.
+#' Uses \code{\link[survminer]{ggsurvplot}} from the survminer package to create publication-ready plots.
 #'
-#' @param ... One or many SurvivalAnalysisResult objects as returned by \code{\link{analyse_survival}} and
+#' @param \dots One or many SurvivalAnalysisResult objects as returned by \code{\link{analyse_survival}} and
 #'     arguments that will be passed to ggsurvplot.
 #'     Bare lists will be spliced.
 #'     If using lists, the same argument may be contained in multiple lists;
 #'     in this case, the last occurrence is used, i.e. you can first pass a list
 #'     with default arguments, and then override some of them.
-#'     In addition to all arguments supported by \code{\link{ggsurvplot}}, these arguments and shortcuts can be used additionally:
+#'     If you want to combine two curves in one plot (\code{\link[survminer]{ggsurvplot_combine}}), wrap
+#'     them in \code{\link{in_one_kaplan_meier_plot}} when passing as argument here.
+#'     (otherwise you will get a list with separate plots for each)
+#'     In addition to all arguments supported by \code{\link[survminer]{ggsurvplot}}, these arguments and shortcuts can be used additionally:
 #'     \itemize{
 #'     \item break.time.by: breakByYear, breakByHalfYear, breakByQuarterYear, breakByMonth (numeric value only in ggsurvplot)
 #'     \item xscale: scaleByYear, scaleByMonth (numeric value only in ggsurvplot)
@@ -17,7 +20,10 @@
 #'     \item table.layout: clean, displays risk table only with color code and number, no grid, axes or labels.
 #'           (do not forget risk.table=TRUE to see something)
 #'     \item papersize: numeric vector of length 2, c(width, height), unit inches. kaplan_meier_plot
-#'           will store a "papersize" attribute with this value which is read by \code{\link{save_pdf}}
+#'           will store a "papersize" attribute with this value which is read by \code{\link[tidytidbits]{save_pdf}}
+#'     \item ggplot.add: ggplot2 object to add to the ggplot plot part of the created KM plot.
+#'           One common use case is manual specification of the line type, which is currently not possible with ggsurvplot.
+#'           The passed object can be result of "+" operations will be added via "+" as usual with ggplot() objects.
 #'     }
 #' @param mapped_plot_args Optionally, if given n objects to plot, a named list of vectors of size n.
 #'     The name is an argument names passed to ggsurvplot. The elements of the vector will be mapped 1:1 to each object.
@@ -52,6 +58,8 @@ kaplan_meier_plot <- function(...,
       stop("kaplan_meier_plot: Got a multivariate result: Kaplan Meier plots are only possible for univariate results")
     else if (inherits(arg, "SurvivalAnalysisUnivariateResult"))
       survival_results <- append_object(arg, survival_results)
+    else if (name == "" && is.null(arg))
+      warning("kaplan_meier_plot: Encountered unnamed null argument at position ", i, ", ignoring")
     else if (name == "")
       stop("kaplan_meier_plot: Encountered unnamed argument which is not a univariate survival result at position ", i)
     else
@@ -88,6 +96,53 @@ kaplan_meier_plot <- function(...,
   }
 }
 
+#' Display multiple survival curves within the same Kaplan Meier plot
+#'
+#' Utility method to tell \code{\link{kaplan_meier_plot}} to combine the given
+#' survival results within the same plot
+#'
+#' @param \dots Named SurvivalAnalysisResult objects as returned by \code{\link{analyse_survival}}.
+#' Please note that the results need to come from the same data source and should
+#' only differ by the "by" parameter. The first given result acts as source for common attributes.
+#' Also takes one single named bare list.
+#' @return Internal object for use by \code{\link{kaplan_meier_plot}} or
+#' \code{\link{kaplan_meier_grid}} only
+#' @export
+#'
+in_one_kaplan_meier_plot <- function(...)
+{
+  args <- dots_list(...,
+                       .named = TRUE)
+
+  if (length(args) == 1 && is_bare_list(args[[1]]))
+  {
+    args <- args[[1]]
+  }
+
+  if (length(args) == 1)
+  {
+    warning("in_one_kaplan_meier_plot: Got only one result. Calling this method then has no effect.")
+    return(args[[1]]) #no-op
+  }
+
+  main_result <- args[[1]]
+  for (i in seq(args))
+  {
+    arg <- args[[i]]
+    if (inherits(arg, "SurvivalAnalysisMultivariateResult"))
+      stop("in_one_kaplan_meier_plot: Got a multivariate result: Kaplan Meier plots are only possible for univariate results")
+    else if (inherits(arg, "SurvivalAnalysisUnivariateResult"))
+      main_result[["combined_fits"]] <- append_object(arg$fit,
+                                                      main_result[["combined_fits"]],
+                                                      name = names(args)[[i]])
+    else
+      stop("in_one_kaplan_meier_plot: Encountered argument which is not a univariate survival result at position ", i)
+  }
+
+  # we detect later on the presence of the combined_fits attribute
+  main_result
+}
+
 .convert_rowness <- function(x, nrow, ncol, order_is_byrow, cut_trailing_na = FALSE)
 {
   byrow_order <- matrix(seq_len(nrow *  ncol), nrow = nrow, ncol = ncol, byrow=order_is_byrow) %>% as.vector()
@@ -115,7 +170,7 @@ kaplan_meier_plot <- function(...,
 #'
 #' @inheritParams kaplan_meier_plot
 #' @param nrow,ncol Determines the layout by giving nrow and/or ncol, if missing, uses an auto layout.
-#' @param layout_matrix Optionally specify a layout matrix, which is passed to \code{gridExtra::\link{marrangeGrob}}
+#' @param layout_matrix Optionally specify a layout matrix, which is passed to \code{\link[gridExtra]{marrangeGrob}}
 #' @param byrow If no layout_matrix is specified and there are multiple rows: How should the plots by layout?
 #'     The order of the plots can be by-row (default) or by-col (set byrow=FALSE).
 #' @param mapped_plot_args Optionally, if given n objects to plot, a named list of vectors of size n.
@@ -126,7 +181,7 @@ kaplan_meier_plot <- function(...,
 #' @param paperwidth,paperheight,size_per_plot You can specify the size per plot, or the full paper width and height.
 #'     size_per_plot may be a number (width == height) or two-dimensional, width and height.
 #'     The resulting paper size will be stored as a papersize attribute that is e.g.
-#'     read by \code{tidytidbits::\link{save_pdf}}
+#'     read by \code{\link[tidytidbits]{save_pdf}}
 #' @param title,surv.plot.height,risk.table.height,ncensor.plot.height Passed to \code{\link[survminer]{arrange_ggsurvplots}}
 #'
 #' @return An object of class arrangelist, which can be printed or saved to pdf with ggsave().
@@ -164,6 +219,8 @@ kaplan_meier_grid <- function(...,
     }
     else if (inherits(arg, "ggsurvplot"))
       plots <- append_object(arg, plots)
+    else if (name == "" && is.null(arg))
+      warning("kaplan_meier_plot: Encountered unnamed null argument at position ", i, ", ignoring")
     else if (name == "")
       stop("kaplan_meier_grid: Encountered unnamed argument which is not a univariate survival result or a plot: at position ", i)
     else
@@ -354,8 +411,8 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
 
 .survivalScaleConstants <- function()
 {
-  scaleByMonths <- 30.5
-  scaleByYears <- 365.25
+  scaleByMonths <- 30.4375 # exact number: 30.436875
+  scaleByYears <- 365.25 # exact number : 365.2425
   breakByYears <- 365.25
   breakByHalfYear <- 6*scaleByMonths
   breakByQuarterYear <- 3*scaleByMonths
@@ -575,9 +632,20 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
   survminerArgs[["tickslab.y"]] <- NULL
   papersize <- survminerArgs[["papersize"]]
   survminerArgs[["papersize"]] <- NULL
+  ggplot_addition <- survminerArgs[["ggplot.add"]]
+  survminerArgs[["ggplot.add"]] <- NULL
 
-  survplotArgs <- c(list(result$fit, data = result$data), survminerArgs)
-  plot <- do.call(ggsurvplot, survplotArgs)
+  # low-key support for the _combine feature via the in_one_kaplan_meier_plot helper
+  if ("combined_fits" %in% names(result))
+  {
+    survplotArgs <- c(list(fit = result$combined_fits, data = result$data), survminerArgs)
+    plot <- do.call(ggsurvplot_combine, survplotArgs)
+  }
+  else
+  {
+    survplotArgs <- c(list(fit = result$fit, data = result$data), survminerArgs)
+    plot <- do.call(ggsurvplot, survplotArgs)
+  }
 
   if (!is.null(tickslab.x) && tickslab.x == FALSE)
   {
@@ -586,6 +654,10 @@ grid_layout <- function(n, rows = NULL, cols = NULL)
   if (!is.null(tickslab.y) && tickslab.y == FALSE)
   {
     plot$plot <- plot$plot + theme(axis.text.y = element_blank())
+  }
+  if (!is.null(ggplot_addition))
+  {
+    plot$plot <- plot$plot + ggplot_addition
   }
 
   if (!is.null(papersize))

@@ -22,11 +22,7 @@
 
 \item{label}{A label describing the result}
 
-\item{p_precision}{Precision with which to print floating point values}
-
-\item{hr_precision}{Precision with which to print floating point values}
-
-\item{time_precision}{Precision with which to print floating point values}
+\item{p_precision, hr_precision, time_precision}{Precision with which to print floating point values}
 
 \item{include_end_separator}{Append "\\n---\\n"? Comes handy if printing multiple results following each other}
 

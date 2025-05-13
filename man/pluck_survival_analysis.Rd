@@ -12,11 +12,11 @@ as returned by \code{\link{analyse_survival}}}
 
 \item{term}{The item to be retrieved:
 \itemize{
-  \item \code{"survfit"} containing the result of the \code{\link{survfit}} function
-  \item \code{"survdiff"} containing the result of the \code{\link{survdiff}} function
-  \item \code{"survfit_overall"} containing the result of the \code{\link{survfit}}
+  \item \code{"survfit"} containing the result of the \code{\link[survival]{survfit}} function
+  \item \code{"survdiff"} containing the result of the \code{\link[survival]{survdiff}} function
+  \item \code{"survfit_overall"} containing the result of the \code{\link[survival]{survfit}}
         function without terms, i.e. the full group not comparing subgroups
-  \item \code{"coxph"} containing the result of the \code{\link{coxph}} function
+  \item \code{"coxph"} containing the result of the \code{\link[survival]{coxph}} function
   \item \code{"p"} The log-rank p value (if \code{by} provided at least two strata)
 }}
 }

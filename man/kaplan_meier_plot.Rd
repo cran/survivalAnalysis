@@ -7,13 +7,16 @@
 kaplan_meier_plot(..., mapped_plot_args = list(), p_lessthan_cutoff = 0.001)
 }
 \arguments{
-\item{...}{One or many SurvivalAnalysisResult objects as returned by \code{\link{analyse_survival}} and
+\item{\dots}{One or many SurvivalAnalysisResult objects as returned by \code{\link{analyse_survival}} and
 arguments that will be passed to ggsurvplot.
 Bare lists will be spliced.
 If using lists, the same argument may be contained in multiple lists;
 in this case, the last occurrence is used, i.e. you can first pass a list
 with default arguments, and then override some of them.
-In addition to all arguments supported by \code{\link{ggsurvplot}}, these arguments and shortcuts can be used additionally:
+If you want to combine two curves in one plot (\code{\link[survminer]{ggsurvplot_combine}}), wrap
+them in \code{\link{in_one_kaplan_meier_plot}} when passing as argument here.
+(otherwise you will get a list with separate plots for each)
+In addition to all arguments supported by \code{\link[survminer]{ggsurvplot}}, these arguments and shortcuts can be used additionally:
 \itemize{
 \item break.time.by: breakByYear, breakByHalfYear, breakByQuarterYear, breakByMonth (numeric value only in ggsurvplot)
 \item xscale: scaleByYear, scaleByMonth (numeric value only in ggsurvplot)
@@ -22,7 +25,10 @@ In addition to all arguments supported by \code{\link{ggsurvplot}}, these argume
 \item table.layout: clean, displays risk table only with color code and number, no grid, axes or labels.
       (do not forget risk.table=TRUE to see something)
 \item papersize: numeric vector of length 2, c(width, height), unit inches. kaplan_meier_plot
-      will store a "papersize" attribute with this value which is read by \code{\link{save_pdf}}
+      will store a "papersize" attribute with this value which is read by \code{\link[tidytidbits]{save_pdf}}
+\item ggplot.add: ggplot2 object to add to the ggplot plot part of the created KM plot.
+      One common use case is manual specification of the line type, which is currently not possible with ggsurvplot.
+      The passed object can be result of "+" operations will be added via "+" as usual with ggplot() objects.
 }}
 
 \item{mapped_plot_args}{Optionally, if given n objects to plot, a named list of vectors of size n.
@@ -36,7 +42,7 @@ If p_lessthan_cutoff == 0.001, the a p value of 0.002 will be displayed as is, w
 If given one result to plot, one ggsurvplot object; if given more than one result, a list of ggsurvplot objects.
 }
 \description{
-Uses \code{\link{ggsurvplot}} from the survminer package to create publication-ready plots.
+Uses \code{\link[survminer]{ggsurvplot}} from the survminer package to create publication-ready plots.
 }
 \examples{
 library(magrittr)

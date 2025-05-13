@@ -11,15 +11,12 @@
 
 \item{...}{Further arguments passed from other methods.}
 
-\item{p_precision}{Precision with which to print floating point values}
-
-\item{hr_precision}{Precision with which to print floating point values}
+\item{p_precision, hr_precision}{Precision with which to print floating point values}
 
 \item{p_less_than_cutoff}{Cut-off for small p values. Values smaller than this will be displayed like "<..."}
 }
 \value{
 The formatted string, invisibly.
-#' @export
 }
 \description{
 Print the essentials of a SurvivalAnalySurvivalAnalysisMultivariateResult

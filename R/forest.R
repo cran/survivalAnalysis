@@ -33,8 +33,6 @@ identity_order <- function(x, ...)
 #'     function, or, per default, the first factor level), resulting in k-1 values for k levels.
 #'     If use_one_hot == TRUE, will only accept univariate results from \code{\link{analyse_survival}} and plot HRs of one factor
 #'     level vs. remaining cohort, resulting in k values for k levels.
-#' @param df For the variant taking a data frame: A data frame which must contain (at least) the columns:
-#'     endpoint, factor.id, factor.name, factor.value, HR, Lower_CI, Upper_CI, p, n, subgroup_n
 #' @param factor_labeller,endpoint_labeller
 #'     Either\itemize{
 #'     \item A function which returns labels for the input:
@@ -100,9 +98,9 @@ identity_order <- function(x, ...)
 #' @param factor_id_sep Allows you to customize the separator of the factor id, the documentation of factor_labeller.
 #' @param na_rm Only used in the multivariate case (use_one_hot = FALSE). Should null coefficients (NA/0/Inf) be removed?
 #' @param title,title_relative_height,title_label_args A title on top of the plot, taking a fraction of title_relative_height of the returned plot.
-#'     The title is drawn using \code{\link{draw_label}}; you can specify any arguments to this function by giving title_label_args
+#'     The title is drawn using \code{\link[cowplot]{draw_label}}; you can specify any arguments to this function by giving title_label_args
 #'     Per default, font attributes are taken from the "title" entry from the given ggtheme, and the label
-#'     is drawn centered as per \code{\link{draw_label}} defaults.
+#'     is drawn centered as per \code{\link[cowplot]{draw_label}} defaults.
 #' @param base_papersize numeric vector of length 2, c(width, height), unit inches.
 #'     forest_plot will store a suggested "papersize" attribute in the return value, computed from
 #'     base_papersize and the number of entries in the plot (in particular, the height will be adjusted)
@@ -191,16 +189,13 @@ cox_results_df <- function(..., use_one_hot = FALSE, factor_id_sep=":")
     obj$coxphSummary <- summary(obj$coxph)
     # for the normal approach, it's one reference level vs. rest, so n is "full" n
     obj$n <- obj$coxphSummary$n
-    obj$subgroup_n <- NA
     if (!invalid(survivalResult))
     {
       obj$unmangleDict <- survivalResult[["colname_unmangle_dict"]]
       obj$survivalResult <- survivalResult
-      # for oneHot, we split the full n in k parts, k number of factor levels
-      if (!invalid(factorLevelOneHot))
-      {
-        obj$subgroup_n <- pluck(survivalResult, "factorFrequencies", factorLevelOneHot)
-      }
+      obj$factorLevelOneHot <- factorLevelOneHot
+      # only availabe with univariate results
+      obj$factorFrequencies <- survivalResult$factorFrequencies
     }
     return(obj)
   }
@@ -245,6 +240,22 @@ cox_results_df <- function(..., use_one_hot = FALSE, factor_id_sep=":")
     objs <- objs[!null_cox]
   }
 
+  adjust_subgroup_n <- function(cox_data_frame, obj)
+  {
+    # for all multivariate cases
+    if (is.null(obj$factorFrequencies))
+    {
+      na_int
+    }
+    # special uv case
+    if (!is.null(obj$factorLevelOneHot))
+    {
+      obj$factorFrequencies[[obj$factorLevelOneHot]]
+    }
+    # general uv case
+    lookup_int(obj$factorFrequencies, cox_data_frame$factor.value)
+  }
+
   objs %>%
     # for each summary:
     map(function(obj) {
@@ -252,7 +263,7 @@ cox_results_df <- function(..., use_one_hot = FALSE, factor_id_sep=":")
       cox_as_data_frame(obj$coxphSummary, unmangle_dict=obj$unmangleDict, factor_id_sep=factor_id_sep) %>%
         # add an endpoint column
         mutate(n = obj$n,
-               subgroup_n = obj$subgroup_n,
+               subgroup_n = adjust_subgroup_n(., obj),
                endpoint = lookup_chr(obj$unmangleDict, .coxEndpoint(obj$coxphSummary), default=identity),
                survivalResult = list(obj$survivalResult))
     }
@@ -641,9 +652,9 @@ forest_plot.df <- function(.df,
 #' @param ... Pass individual plots returned by forest_plot, or lists of such plots (bare lists will be spliced).
 #' @param nrow,ncol Specify the grid (one is sufficient, uses auto layout if both are null)
 #' @param byrow If the plots are given in by-row, or by-column (byrow=FALSE) order
-#' @param plot_grid_args Additional arguments to the \code{\link{plot_grid}} function which is used to create the grid.
+#' @param plot_grid_args Additional arguments to the \code{\link[cowplot]{plot_grid}} function which is used to create the grid.
 #'
-#' @return Return value of \code{\link{plot_grid}}
+#' @return Return value of \code{\link[cowplot]{plot_grid}}
 #' @export
 forest_plot_grid <- function(...,
                              nrow = NULL,

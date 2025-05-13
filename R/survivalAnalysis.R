@@ -15,7 +15,7 @@
 #' @importFrom grDevices dev.off
 #' @importFrom graphics strwidth
 #' @importFrom stats as.formula formula na.omit qnorm
-#' @importFrom utils capture.output
+#' @importFrom utils capture.output write.csv
 #' @importFrom cowplot ggdraw draw_label
 #' @importFrom stats pchisq
 NULL
@@ -56,4 +56,13 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c(".",
                                                        "subgroup_n_string",
                                                        "Likelihood ratio test p",
                                                        "Score (logrank) test p",
-                                                       "Wald test p"))
+                                                       "Wald test p",
+                                                       "lower",
+                                                       "n.event",
+                                                       "n.risk",
+                                                       "rate",
+                                                       "stratum",
+                                                       "stratum_value",
+                                                       "surv",
+                                                       "time",
+                                                       "upper"))

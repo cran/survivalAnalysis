@@ -136,11 +136,10 @@ analyse_survival  <- function(data,
   }
 
   # We had a factor, but after removing na etc., there is only one stratum left
-  if (has_strata && has_length(unique(data[[factorId]]), 1))
+  if (has_strata && length(unique(data[[factorId]])) < 2)
   {
     warning(str_c("Survival analysis with factor ", colname_unmangle_dict[[factorId]],
-                  ": Only one factor value (", as.character(data[1, factorId]),
-                  "), no diffs possible."))
+                  ": Only one or no factor value, no diffs possible."))
     has_strata <- F
   }
 

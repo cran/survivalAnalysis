@@ -28,7 +28,10 @@ Bare lists will be spliced.
 If using lists, the same argument may be contained in multiple lists;
 in this case, the last occurrence is used, i.e. you can first pass a list
 with default arguments, and then override some of them.
-In addition to all arguments supported by \code{\link{ggsurvplot}}, these arguments and shortcuts can be used additionally:
+If you want to combine two curves in one plot (\code{\link[survminer]{ggsurvplot_combine}}), wrap
+them in \code{\link{in_one_kaplan_meier_plot}} when passing as argument here.
+(otherwise you will get a list with separate plots for each)
+In addition to all arguments supported by \code{\link[survminer]{ggsurvplot}}, these arguments and shortcuts can be used additionally:
 \itemize{
 \item break.time.by: breakByYear, breakByHalfYear, breakByQuarterYear, breakByMonth (numeric value only in ggsurvplot)
 \item xscale: scaleByYear, scaleByMonth (numeric value only in ggsurvplot)
@@ -37,12 +40,15 @@ In addition to all arguments supported by \code{\link{ggsurvplot}}, these argume
 \item table.layout: clean, displays risk table only with color code and number, no grid, axes or labels.
       (do not forget risk.table=TRUE to see something)
 \item papersize: numeric vector of length 2, c(width, height), unit inches. kaplan_meier_plot
-      will store a "papersize" attribute with this value which is read by \code{\link{save_pdf}}
+      will store a "papersize" attribute with this value which is read by \code{\link[tidytidbits]{save_pdf}}
+\item ggplot.add: ggplot2 object to add to the ggplot plot part of the created KM plot.
+      One common use case is manual specification of the line type, which is currently not possible with ggsurvplot.
+      The passed object can be result of "+" operations will be added via "+" as usual with ggplot() objects.
 }}
 
 \item{nrow, ncol}{Determines the layout by giving nrow and/or ncol, if missing, uses an auto layout.}
 
-\item{layout_matrix}{Optionally specify a layout matrix, which is passed to \code{gridExtra::\link{marrangeGrob}}}
+\item{layout_matrix}{Optionally specify a layout matrix, which is passed to \code{\link[gridExtra]{marrangeGrob}}}
 
 \item{byrow}{If no layout_matrix is specified and there are multiple rows: How should the plots by layout?
 The order of the plots can be by-row (default) or by-col (set byrow=FALSE).}
@@ -56,7 +62,7 @@ are already plotted (kaplan_meier_plot results)}
 \item{paperwidth, paperheight, size_per_plot}{You can specify the size per plot, or the full paper width and height.
 size_per_plot may be a number (width == height) or two-dimensional, width and height.
 The resulting paper size will be stored as a papersize attribute that is e.g.
-read by \code{tidytidbits::\link{save_pdf}}}
+read by \code{\link[tidytidbits]{save_pdf}}}
 
 \item{title, surv.plot.height, risk.table.height, ncensor.plot.height}{Passed to \code{\link[survminer]{arrange_ggsurvplots}}}
 

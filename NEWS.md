@@ -1,3 +1,16 @@
+# survivalAnalysis 0.4.0
+
+* survival_rates and write_survival_rates: Compute survival rates by KM estimate for given time points    for an univariate survival analysis.
+* allow to display multiple KM curves (not comparisons) in the same KM plot
+  via in_one_kaplan_meier_plot
+* mv analysis: add support for interactions
+* kaplan_meier_plot: add parameter to allow to add ggplot objects to plot (to specify line type e.g.)
+* uv analysis: Support subgroup_n in cases where a uv analysis with a factor is displayed
+* bug fix: adjust days per months constant to 30.4375 (previously 30.5, exact 30.436875) so days per year is an exact multiple
+* bug fix in pluck_survival_analysis
+* bug fix in write_survival: need to remove wrapping list for output to work correctly with multiple objects
+* fix NOTEs on CRAN with R-devel
+
 # survivalAnalysis 0.3.0
 
 * add the write_survival method allowing to write the formatted summary

@@ -9,6 +9,7 @@ analyse_multivariate(
   data,
   time_status,
   covariates,
+  interaction_covariates = NULL,
   strata = NULL,
   covariate_name_dict = NULL,
   covariate_label_dict = NULL,
@@ -20,6 +21,7 @@ analyze_multivariate(
   data,
   time_status,
   covariates,
+  interaction_covariates = NULL,
   strata = NULL,
   covariate_name_dict = NULL,
   covariate_label_dict = NULL,
@@ -39,6 +41,9 @@ Pass symbolic columns names or code that is tidily-evaluated on \code{data}.
 Column names or column indices are also possible.
 In any case, factors with appropriate labels will be generated which in all printouts.
 You can use \code{covariate_name_dict} and \code{covariate_label_dict} to rename these factors and their levels.}
+
+\item{interaction_covariates}{Interactions (optional). Same format as covariates.
+Covariates to include together with their interaction (*, not + in the formula)}
 
 \item{strata}{Strata (optional). Same format as covariates.
 For each strata level (if multiple fields, unique combinations of levels) a separate baseline hazard is fit.}

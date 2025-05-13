@@ -19,10 +19,10 @@ forest_plot_grid(
 
 \item{byrow}{If the plots are given in by-row, or by-column (byrow=FALSE) order}
 
-\item{plot_grid_args}{Additional arguments to the \code{\link{plot_grid}} function which is used to create the grid.}
+\item{plot_grid_args}{Additional arguments to the \code{\link[cowplot]{plot_grid}} function which is used to create the grid.}
 }
 \value{
-Return value of \code{\link{plot_grid}}
+Return value of \code{\link[cowplot]{plot_grid}}
 }
 \description{
 Makes use of the stored layout information in a \code{\link{forest_plot}} plot to

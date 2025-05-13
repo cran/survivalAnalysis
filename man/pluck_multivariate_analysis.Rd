@@ -12,7 +12,7 @@ as returned by \code{\link{analyse_multivariate}}}
 
 \item{term}{The item to be retrieved:
 \itemize{
-  \item \code{"coxph"} containing the result of the \code{\link{coxph}} function
+  \item \code{"coxph"} containing the result of the \code{\link[survival]{coxph}} function
   \item \code{"summary"} containing the result of the \code{\link{summary}} of the "coxph" result
   \item \code{"summary_data_frame"} containing summary as a data frame (see \code{\link{multivariate_as_data_frame}})
   \item \code{"p"} A vector of p values for the covariates, equivalent to the "p" column of "summary_data_frame"

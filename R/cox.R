@@ -141,7 +141,7 @@ cox_as_data_frame <- function(coxphsummary, unmangle_dict=NULL, factor_id_sep=":
 #'               as returned by \code{\link{analyse_multivariate}}
 #' @param term   The item to be retrieved:
 #'    \itemize{
-#'      \item \code{"coxph"} containing the result of the \code{\link{coxph}} function
+#'      \item \code{"coxph"} containing the result of the \code{\link[survival]{coxph}} function
 #'      \item \code{"summary"} containing the result of the \code{\link{summary}} of the "coxph" result
 #'      \item \code{"summary_data_frame"} containing summary as a data frame (see \code{\link{multivariate_as_data_frame}})
 #'      \item \code{"p"} A vector of p values for the covariates, equivalent to the "p" column of "summary_data_frame"
@@ -253,7 +253,7 @@ format.SurvivalAnalysisMultivariateResult <- function(x,
 #'
 #' @inheritParams format.SurvivalAnalysisMultivariateResult
 #' @return The formatted string, invisibly.
-#' #' @export
+#' @export
 print.SurvivalAnalysisMultivariateResult <- function(x,
                                                      ...,
                                                      p_precision = 3,
@@ -290,6 +290,8 @@ print.SurvivalAnalysisMultivariateResult <- function(x,
 #'    Column names or column indices are also possible.
 #'    In any case, factors with appropriate labels will be generated which in all printouts.
 #'    You can use \code{covariate_name_dict} and \code{covariate_label_dict} to rename these factors and their levels.
+#' @param interaction_covariates Interactions (optional). Same format as covariates.
+#'    Covariates to include together with their interaction (*, not + in the formula)
 #' @param strata Strata (optional). Same format as covariates.
 #'    For each strata level (if multiple fields, unique combinations of levels) a separate baseline hazard is fit.
 #' @param covariate_name_dict A dictionary (named list or vector) of old->new covariate names
@@ -325,27 +327,32 @@ print.SurvivalAnalysisMultivariateResult <- function(x,
 analyse_multivariate <- function(data,
                                  time_status,
                                  covariates,
+                                 interaction_covariates = NULL,
                                  strata = NULL,
                                  covariate_name_dict = NULL,
                                  covariate_label_dict = NULL,
                                  reference_level_dict = NULL,
                                  sort_frame_by = vars(HR))
 {
-  if (invalid(covariates))
+  covariates <- maybe_missing(covariates, default=NULL)
+  if (invalid(covariates) && invalid(interaction_covariates))
     stop("multivariate analysis: Must provide covariates (at least one, usually multiple)")
 
   values <- list()
 
   survival_col_dfs <- .build_survival_columns(data, time_status)
   factor_col_dfs <- .build_columns(data, covariates)
+  interaction_col_dfs <- .build_columns(data, interaction_covariates)
   strata_col_dfs <- .build_columns(data, strata)
   # ...col_dfs are named lists of original name -> tibbles with one column, where column name is syntactically correct
 
   time_status <- map_chr(survival_col_dfs, colnames)
   covariates <- map_chr(factor_col_dfs, colnames)
+  interactions <- map_chr(interaction_col_dfs, colnames)
   strata <- map_chr(strata_col_dfs, colnames)
 
-  all_col_dfs <- c(survival_col_dfs, factor_col_dfs, strata_col_dfs)
+  all_col_dfs <- c(survival_col_dfs, factor_col_dfs,
+                   interaction_col_dfs, strata_col_dfs)
   data <- bind_cols(all_col_dfs, .name_repair = "minimal")
   # for our use, build a dict original name -> mangled name
   colname_dict <- set_names(colnames(data), nm=names(all_col_dfs))
@@ -355,6 +362,7 @@ analyse_multivariate <- function(data,
   values[["data"]] <- data
   values[["data_attributes"]] <- list(survival_ids = time_status,
                                       factor_ids = covariates,
+                                      interaction_ids = interactions,
                                       strata_ids = strata)
 
   # remove dict entries for columns which we did not get at all as covariates
@@ -373,6 +381,7 @@ analyse_multivariate <- function(data,
 
   survFormula <- as.formula(str_c("Surv(",time_status[[1]],",",time_status[[2]],") ~ ",
                                   str_c(covariates, collapse = " + "),
+                                  str_c(interactions, collapse = " * "),
                                   str_c(map_chr(strata, ~str_c(" + strata(", ., ")")),
                                         collapse = "")
                                   ))
@@ -386,11 +395,13 @@ analyse_multivariate <- function(data,
                       sort_by = sort_frame_by) %>%
     mutate(factor.name = lookup_chr(covariate_name_dict, factor.name, default = identity),
            factor.value = lookup_chr(covariate_label_dict, factor.value, default = identity))
-  values$overall <- list("n" = values %>% pluck("summary", "n"),
+  values$overall <- list("n" = values %>% pluck("summary", "n", .default = na_dbl),
                          "covariates" = names(factor_col_dfs),
-                         "Likelihood ratio test p" = values %>% pluck("summary", "logtest", "pvalue"),
-                         "Wald test p" = values %>% pluck("summary", "waldtest", "pvalue"),
-                         "Score (logrank) test p" = values %>% pluck("summary", "sctest", "pvalue"))
+                         "Likelihood ratio test p" = values %>% pluck("summary", "logtest", "pvalue", .default = na_dbl),
+                         "Wald test p" = values %>% pluck("summary", "waldtest", "pvalue", .default = na_dbl),
+                         "Score (logrank) test p" = values %>% pluck("summary", "sctest", "pvalue", .default = na_dbl))
+  if (!invalid(interactions))
+    values$overall$interactions <- names(interaction_col_dfs)
   if (!invalid(strata))
     values$overall$strata <- names(strata_col_dfs)
 
